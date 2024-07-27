@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.py
+src/time_calc.egg-info/PKG-INFO
+src/time_calc.egg-info/SOURCES.txt
+src/time_calc.egg-info/dependency_links.txt
+src/time_calc.egg-info/entry_points.txt
+src/time_calc.egg-info/requires.txt
+src/time_calc.egg-info/top_level.txt
