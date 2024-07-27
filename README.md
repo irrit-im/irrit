@@ -1,21 +1,24 @@
-# time_calc
+# time_calcfreename
 
 ## Description
 
-This package provides a simple utility function to calculate the exact time after adding a specified number of seconds.
+This package provides a single and simple utility function to calculate the exact time after adding a specified number of seconds.
 
 ## Installation
-
-You can install this package using pip:
+You can also install this package using pip:
+```bash
+pip install git+https://github.com/irrit-im/irrit.git@main
+```
+You can also install this package directly from PyPI:
 
 ```bash
-pip install time_calc
+pip install time_calcfreename
 ```
 
 ## Usage
 
 ```python
-from time_calc import add_seconds
+from time_calcfreename import add_seconds
 
 # Example usage
 result = add_seconds(60)
