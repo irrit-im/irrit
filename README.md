@@ -15,7 +15,7 @@ pip install time_calc
 ## Usage
 
 ```python
-from your_package_name import add_seconds
+from time_calc import add_seconds
 
 # Example usage
 result = add_seconds(60)
