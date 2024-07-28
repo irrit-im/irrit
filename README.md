@@ -2,10 +2,10 @@
 
 ## Description
 
-This package provides a single and simple utility function to calculate the exact time after adding a specified number of seconds.
+This package provides a single and simple utility function to calculate the exact time after adding a specified number of seconds to the current time.
 
 ## Installation
-You can also install this package using pip:
+You can install this package from git using pip:
 ```bash
 pip install git+https://github.com/irrit-im/irrit.git@main
 ```
