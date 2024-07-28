@@ -5,11 +5,8 @@
 This package provides a single and simple utility function to calculate the exact time after adding a specified number of seconds to the current time.
 
 ## Installation
-You can install this package from git using pip:
-```bash
-pip install git+https://github.com/irrit-im/irrit.git@main
-```
-You can also install this package directly from PyPI:
+
+You can install this package using pip:
 
 ```bash
 pip install time_calcfreename
