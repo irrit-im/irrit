@@ -1,0 +1,5 @@
+setuptools==71.1.0
+urllib3==2.2.2
+wheel==0.43.0
+zipp==3.19.2
+zope.interface==6.4.post2

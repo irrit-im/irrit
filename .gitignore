@@ -1,2 +1,5 @@
 .venv
-dontuploadthis.py
+.pypirc
+time_calcfreename.egg-info
+dist
+build
