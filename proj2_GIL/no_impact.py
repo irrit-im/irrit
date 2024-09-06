@@ -18,10 +18,10 @@ t2.start()
 t1.join()
 t2.join()
 end = time()
+print("Multi-threads run time: ", end - start)
 
 # Single-threaded
 start = time()
 wait(NUMBER)
 end = time()
-
-print("Run time: ", end - start)
+print("Single-thread run time: ", end - start)
