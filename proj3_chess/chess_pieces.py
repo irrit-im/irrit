@@ -2,7 +2,6 @@ from board import Board
 from player import Player
 
 
-# TODO: bug somewhere (probably in whithin_board)
 class ChessPiece:
     """Mother class for all chess pieces."""
 
