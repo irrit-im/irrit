@@ -39,39 +39,38 @@ class ChessPiece:
 class Rook(ChessPiece):
     piece_name = "R"
 
-    def available_moves(self) -> list:  # TODO: fix bug: -1 passes as valid output
+    def available_moves(self) -> list:
         moves = []
         for x in (1, -1):
-            s = [self.spot[0] + x, self.spot[1]]
-            while self.board.is_whithin(s) and self.legal_move(s):
+            s = (self.spot[0] + x, self.spot[1])
+            while self.board.within_range(s) and self.legal_move(s):
                 moves.append((s, self.captures_piece(s)))
                 if self.captures_piece(s):
                     break
-                s[0] += x
+                s = (s[0] + x, s[1])
         for y in (1, -1):
-            s = [self.spot[0], self.spot[1] + y]
-            while self.board.is_whithin(s) and self.legal_move(s):
+            s = (self.spot[0], self.spot[1] + y)
+            while self.board.within_range(s) and self.legal_move(s):
                 moves.append((s, self.captures_piece(s)))
                 if self.captures_piece(s):
                     break
-                s[1] += y
+                s = (s[0], s[1] + y)
         return moves
 
 
 class Bishop(ChessPiece):
     piece_name = "B"
 
-    def available_moves(self) -> list:  # TODO: fix bug: -1 passes as valid output
+    def available_moves(self) -> list:
         moves = []
-        for x in [1, -1]:
-            for y in [1, -1]:
-                s = [self.spot[0] + x, self.spot[1] + y]
-                while self.board.is_whithin(s) and self.legal_move(s):
+        for x in (1, -1):
+            for y in (1, -1):
+                s = (self.spot[0] + x, self.spot[1] + y)
+                while self.board.within_range(s) and self.legal_move(s):
                     moves.append((s, self.captures_piece(s)))
                     if self.captures_piece(s):
                         break
-                    s[0] += x
-                    s[1] += y
+                    s = (s[0] + x, s[1] + y)
         return moves
 
 
@@ -90,7 +89,7 @@ class King(ChessPiece):
         for x in (-1, 0, 1):
             for y in (-1, 0, 1):
                 s = (self.spot[0] + x, self.spot[1] + y)
-                if self.board.is_whithin(s) and s != self.spot and self.legal_move(s):
+                if self.board.within_range(s) and s != self.spot and self.legal_move(s):
                     moves.append((s, self.captures_piece(s)))
         return moves
 
@@ -104,7 +103,7 @@ class Knight(ChessPiece):
             for y in (-1, 1):
                 for m in ((1, 2), (2, 1)):
                     s = (self.spot[0] + m[0] * x, self.spot[1] + m[1] * y)
-                    if self.board.is_whithin(s) and self.legal_move(s):
+                    if self.board.within_range(s) and self.legal_move(s):
                         moves.append((s, self.captures_piece(s)))
         return moves
 
@@ -116,7 +115,7 @@ class Pawn(ChessPiece):
         moves = []
         s = (self.spot[0], self.spot[1] + self.player.direction)
         if (
-            self.board.is_whithin(s)
+            self.board.within_range(s)
             and self.legal_move(s)
             and not self.captures_piece(s)
         ):
@@ -124,7 +123,7 @@ class Pawn(ChessPiece):
         for i in (-1, 1):
             s = (self.spot[0] + i, self.spot[1] + self.player.direction)
             if (
-                self.board.is_whithin(s)
+                self.board.within_range(s)
                 and self.legal_move(s)
                 and self.captures_piece(s)
             ):

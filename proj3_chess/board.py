@@ -7,7 +7,7 @@ class Board:
         self.height = height
         self.board_state = [[None] * self.height for i in range(self.width)]
 
-    def is_whithin(self, spot: tuple) -> bool:
+    def within_range(self, spot: tuple) -> bool:
         return 0 <= spot[0] < self.width and 0 <= spot[1] < self.height
 
     def print(self):
