@@ -4,7 +4,7 @@ from player import Player
 
 class ChessPiece:
 
-    def __init__(self, player: Player, board: Board, spot: list) -> None:
+    def __init__(self, player: Player, board: Board, spot: tuple) -> None:
         # TODO: raise error if spot is already taken or is outside of range
         self.player = player
         self.board = board
@@ -18,8 +18,8 @@ class ChessPiece:
         spot_state = self.board.board_state[spot[0]][spot[1]]
         return True if spot_state == None else spot_state.player != self.player
 
-    def captures_piece(self, spot: tuple) -> bool:  # TODO: rename
-        spot_state = self.board.board_state[spot[0]][spot[1]]  # TODO: rename
+    def captures_piece(self, spot: tuple) -> bool:
+        spot_state = self.board.board_state[spot[0]][spot[1]]
         return (
             False
             if (spot_state == None) or (spot_state.player == self.player)
@@ -28,14 +28,39 @@ class ChessPiece:
 
 
 class Rook(ChessPiece):
-    def available_moves(self) -> list:  # check if legal, if a piece is taken
-        moves = []  # TODO: think - represent moves as tuples or objs?
-        for x in range(self.board.width):
-            s = (x, self.spot[1])
-            if x != self.spot[0] and self.legal_move(s):
+    def available_moves(self) -> list:
+        moves = []
+        for x in [1, -1]:
+            s = [self.spot[0] + x, self.spot[1]]
+            while 0 <= s[0] < self.board.width and self.legal_move(s):
                 moves.append((s[0], s[1], self.captures_piece(s)))
-        for y in range(self.board.height):
-            s = (self.spot[0], y)
-            if y != self.spot[1] and self.legal_move(s):
+                if self.captures_piece(s):
+                    break
+                s[0] += x
+        for y in [1, -1]:
+            s = [self.spot[0], self.spot[1] + y]
+            while 0 <= s[1] < self.board.height and self.legal_move(s):
                 moves.append((s[0], s[1], self.captures_piece(s)))
+                if self.captures_piece(s):
+                    break
+                s[1] += y
+        return moves
+
+
+class Bishop(ChessPiece):
+    def available_moves(self) -> list:
+        moves = []
+        for x in [1, -1]:
+            for y in [1, -1]:
+                s = [self.spot[0] + x, self.spot[1] + y]
+                while (
+                    0 <= s[0] < self.board.width
+                    and 0 <= s[1] < self.board.height
+                    and self.legal_move(s)
+                ):
+                    moves.append((s[0], s[1], self.captures_piece(s)))
+                    if self.captures_piece(s):
+                        break
+                    s[0] += x
+                    s[1] += y
         return moves
