@@ -1,0 +1,2 @@
+# Description
+This Python project generates all possible moves for a given player on a chessboard. It includes basic implementations of chess pieces like Rook, Bishop, and others, along with a simple board representation. The goal is to provide a way to compute available moves for any given piece, including whether a move captures an opponent’s piece.
