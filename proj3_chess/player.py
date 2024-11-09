@@ -1,18 +1,22 @@
+from enum import Enum
 from typing import Callable
 
 
+class Direction(Enum):  # TODO: Maybe rename this? or add RIGHT and LEFT?
+    UP = 1
+    DOWN = -1
+
+
 class Player:
-    def __init__(self, direction: int, symbol: Callable[[str], str]) -> None:
-        """This class represents a player in a chess game. \n
-        direction (int): the direction in which the pieces move - either 1 or -1 \n
-        symbol (function): a string function that recieves a string and returns a string. this will be the graphichal representation for the pieces. example: passig the function upper means the players pieces will be sybmolized by capital letters.
-        """
+    def __init__(
+        self, direction: Direction, symbol_transformation: Callable[[str], str]
+    ) -> None:
         self.direction = direction
-        self.symbol = symbol
+        self.symbolize = symbol_transformation
         self.pieces = []
 
-    def all_available_moves(self):
-        moves = []
-        for i in self.pieces:
-            moves.append((i.name, i.available_moves()))
+    def get_available_moves(self) -> dict:  # TODO: proper type hint
+        moves = {}
+        for piece in self.pieces:
+            moves.append[piece] = piece.get_available_moves()
         return moves
