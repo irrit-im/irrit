@@ -3,3 +3,4 @@
 time_calcfreename.egg-info
 dist
 build
+**/__pychache__/
