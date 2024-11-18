@@ -7,7 +7,7 @@ class Direction(Enum):  # TODO: Maybe rename this? or add RIGHT and LEFT?
     DOWN = -1
 
 
-class Player:
+class Color:
     def __init__(
         self, direction: Direction, symbol_transformation: Callable[[str], str]
     ) -> None:
@@ -15,8 +15,8 @@ class Player:
         self.symbolize = symbol_transformation
         self.pieces = []
 
-    def get_available_moves(self) -> dict:  # TODO: proper type hint
-        moves = {}
-        for piece in self.pieces:
-            moves.append[piece] = piece.get_available_moves()
-        return moves
+    # def get_available_moves(self) -> dict:  # TODO: proper type hint
+    #     moves = {}
+    #     for piece in self.pieces:
+    #         moves.append[piece] = piece.get_available_moves()
+    #     return moves
