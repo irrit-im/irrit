@@ -1,19 +1,36 @@
-class Move:
-    CAPTURE_SYMBOL = "x"
+# TODO: rename file
+from pydantic import BaseModel
 
-    def __init__(self, piece_symbol: str, spot: tuple, does_capture_piece: bool):
-        self.spot = spot
-        self.does_capture_piece = does_capture_piece
-        self.piece_symbol = piece_symbol  # TODO: does it make more sence to save a reference to the piece?
 
-    def _convert_num_to_char(self, num: int):
-        # TODO: figure how to represent board larger that 26
-        return chr(num + 97)
+class MoveVector(BaseModel):
+    x: int
+    y: int
+
+
+class Spot(BaseModel):  # TODO: constraint this to non-negative nums
+    x: int
+    y: int
 
     def __str__(self) -> str:
-        piece = self.piece_symbol
-        capture_indicator = self.CAPTURE_SYMBOL if self.does_capture_piece else ""
-        column = self._convert_num_to_char(self.spot[0])
-        row = self.spot[1]
+        convert_num_to_char = lambda num: chr(
+            num + 97
+        )  # TODO: what about boards larger than 26?
+        return convert_num_to_char(self.x) + str(self.y)
 
-        return f"{piece}{capture_indicator}{column}{row}"
+    def __add__(self, vector: MoveVector) -> "Spot":
+        if not isinstance(vector, MoveVector):
+            raise TypeError("Can only add a Spot and a MoveVector.")
+        return Spot(x=self.x + vector.x, y=self.y + vector.y)
+
+
+class Move(BaseModel):
+    destination: Spot
+    does_capture_piece: bool
+    piece_symbol: str  # TODO: does it make more sence to save a reference to the piece?
+
+    CAPTURE_SYMBOL: str = "x"
+
+    def __str__(self) -> str:
+        capture_indicator = self.CAPTURE_SYMBOL if self.does_capture_piece else ""
+
+        return self.piece_symbol + capture_indicator + str(self.destination)
