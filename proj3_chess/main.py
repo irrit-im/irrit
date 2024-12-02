@@ -1,33 +1,21 @@
-from chess_pieces import *
-from board import Board
-from proj3_chess.piece_properties import Player
-from random import randint, choice
+from tests import generate_random_board, create_default_players
+
+MIN_BOARD_SIZE = 2
+MAX_BOARD_SIZE = 5
+
+white, black = create_default_players()
+board = generate_random_board(MIN_BOARD_SIZE, MAX_BOARD_SIZE, white, black)
 
 
-def generate_random_board(
-    min_size: int,
-    max_size: int,
-    color1: Color,
-    color2: Color,
-    piece_types: Tuple[ChessPiece] = (Rook, Bishop, Knight, Pawn, King, Queen),
-):
-    width = randint(min_size, max_size)
-    height = randint(min_size, max_size)
-    board = Board(width, height)
-
-    for x in range(board.width):
-        for y in range(board.height):
-            if randint(0, 1):
-                piece = choice(piece_types)(choice((color1, color2)))
-                piece.add_to_board(board, Spot(x=x, y=y))
-    return board
+def main():
+    print(board)
+    for row in board.state:
+        for spot in row:
+            if spot:
+                print(f"\n{spot.symbol} at {spot.get_spot()}:  ", end="")
+                for i in spot.get_available_moves():
+                    print(i, end=" , ")
 
 
-white = Color(1, lambda x: x.upper() + " ")
-black = Color(-1, lambda y: y.lower() + "*")
-
-generate_random_board(2, 5, white, black)
-
-
-for move in white.get_available_moves():  # TODO: ummmm
-    print(move)
+if __name__ == "__main__":
+    main()

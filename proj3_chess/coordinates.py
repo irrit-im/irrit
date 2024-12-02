@@ -1,4 +1,3 @@
-# TODO: rename file
 from pydantic import BaseModel
 
 
@@ -6,16 +5,28 @@ class MoveVector(BaseModel):
     x: int
     y: int
 
+    def __mul__(self, vector: "MoveVector"):
+        return MoveVector(x=self.x * vector.x, y=self.y * vector.y)
 
-class Spot(BaseModel):  # TODO: constraint this to non-negative nums
+
+MV = MoveVector
+
+
+def convert_num_to_str(num):
+    text = ""
+    if num > 25:
+        text += convert_num_to_str(num // 26)
+        print("hi")
+    text += chr(num % 26 + 97)
+    return text
+
+
+class Spot(BaseModel):
     x: int
     y: int
 
     def __str__(self) -> str:
-        convert_num_to_char = lambda num: chr(
-            num + 97
-        )  # TODO: what about boards larger than 26?
-        return convert_num_to_char(self.x) + str(self.y)
+        return convert_num_to_str(self.x) + str(self.y)
 
     def __add__(self, vector: MoveVector) -> "Spot":
         if not isinstance(vector, MoveVector):
@@ -26,7 +37,7 @@ class Spot(BaseModel):  # TODO: constraint this to non-negative nums
 class Move(BaseModel):
     destination: Spot
     does_capture_piece: bool
-    piece_symbol: str  # TODO: does it make more sence to save a reference to the piece?
+    piece_symbol: str
 
     CAPTURE_SYMBOL: str = "x"
 
