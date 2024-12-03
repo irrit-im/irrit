@@ -20,7 +20,7 @@ def generate_random_board(
     player1: Player,
     player2: Player,
     piece_types: Tuple[ChessPiece] = PIECE_TYPES,
-):
+) -> Board:
     width = randint(min_size, max_size)
     height = randint(min_size, max_size)
     board = Board(width, height)
