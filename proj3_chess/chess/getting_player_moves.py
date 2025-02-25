@@ -20,12 +20,12 @@ def get_player_pieces(board: Board, player: Player) -> list[ChessPiece]:
     return pieces
 
 
-def print_player_moves() -> None:
+def print_player_moves(player: Player) -> None:
     print(board)
-    for piece in get_player_pieces(board, white):
+    for piece in get_player_pieces(board, player):
         print(f"\n{piece.symbol} at {piece.get_spot()}:  ", end="")
         for i in piece.get_available_moves():
             print(i, end=" , ")
 
 
-print_player_moves()
+print_player_moves(white)
