@@ -1,51 +1,99 @@
 from dataclasses import dataclass
+from typing import Tuple
+
+POSSIBLE_DIRECTIONS = (
+    (1, 0),
+    (0, 1),
+    (0, -1),
+    (-1, 0),
+    (-1, -1),
+    (1, 1),
+    (-1, 1),
+    (1, -1),
+)  # TODO: rename
 
 
-@dataclass(frozen=True)
-class Tile:
+@dataclass(frozen=True, order=True)
+class Vertex:
     x: int
     y: int
 
     def __str__(self) -> str:
-        return f"({self.x}, {self.y})"
+        return f"v({self.x}, {self.y})"
 
-    def __eq__(self, tile: "Tile") -> bool:
-        return self.x == tile.x and self.y == tile.y
+    def __add__(self, value: Tuple[int, int] | "Vertex") -> "Vertex":
+        if type(value) == tuple:
+            return Vertex(x=self.x + value[0], y=self.y + value[1])
+        elif type(value) == Vertex:
+            return Vertex(self.x + value.x, self.y + value.y)
 
-    def __gt__(self, tile: "Tile") -> bool:
-        """x value takes priority"""
-        if self.x > tile.x:
+    # def __gt__(self, value: "Vertex") -> bool:
+    #     return (self.x, self.y) > (value.x, value.y)
+
+    def __eq__(self, value: "Vertex") -> bool:
+        return self.x == value.x and self.y == value.y
+
+    def get_adjacent_vertices(self) -> list["Vertex"]:
+        adjacent_vertices = []
+        for direction in POSSIBLE_DIRECTIONS:
+            adjacent_vertices.append(self + direction)
+        return adjacent_vertices
+
+
+@dataclass()
+class VertexData:
+    vertex: Vertex  # TODO: ahhhh this would be a double referenec
+    shortest_path_origin: Vertex
+    path_length_from_start: int
+    huerostic_cost_to_goal: int
+    # accesed_through = []
+
+    def total_heuristic_cost(self) -> int:
+        return self.path_length_from_start + self.huerostic_cost_to_goal
+
+    def __eq__(self, value: "VertexData") -> bool:
+        return self.total_heuristic_cost() == value.total_heuristic_cost()
+
+    def __gt__(self, value: "VertexData") -> bool:
+        if self.total_heuristic_cost() > value.total_heuristic_cost():
             return True
-        elif self.x == tile.x:
-            if self.y > tile.y:
-                return True
-
-        return False
-
-    def __ge__(self, tile: "Tile") -> bool:
-        return self == tile or self > tile
+        elif self == value:
+            return self.huerostic_cost_to_goal > value.huerostic_cost_to_goal
+        else:
+            return False
 
 
-Block = Tile  # TODO (but only after everything else is done): represent as ranges instead of single tiles, use sweepline alg (or an extension of it) for determining spot's validity
+# @dataclass(frozen=True, order=True)
+# class Obstacle:
+#     x: int
+#     y: int  # TODO (but only after everything else is done): represent as ranges instead of single tiles, use sweepline alg (or an extension of it) for determining spot's validity
+
+
+def heuristic_distance(start: Vertex, end: Vertex) -> int:
+    return abs(end.x - start.x) + abs(end.y - start.y)
 
 
 @dataclass(frozen=True)
-class Block(Tile): ...
+class Obstacle(Vertex): ...
 
 
 class Graph:
-    def __init__(self, width, height, blocks: list[Block]) -> None:
+    def __init__(self, width, height, blocks: list[Obstacle]) -> None:
         self.width = width
         self.height = height
         self.blocks = blocks.sort()
 
-    def is_tile_on_board(self, tile: Tile) -> bool:
+    def is_tile_on_board(self, tile: Vertex) -> bool:
         return 0 <= tile.x < self.width and 0 <= tile.y < self.height
 
-    def is_tile_not_blocked(self, tile: Block) -> bool:
-        top_thresh = len(self.blocks)
-        bottom_tresh = 0
-        while top_thresh - bottom_tresh != 0:
-            test_index = (bottom_tresh + top_thresh) // 2
-            if self.blocks[test_index] == tile:
-                bottom_tresh, top_thresh
+    def is_tile_not_blocked(self, tile: Vertex) -> bool:
+        # top_thresh = len(self.blocks)
+        # bottom_tresh = 0
+        # while top_thresh - bottom_tresh != 0:
+        #     test_index = (bottom_tresh + top_thresh) // 2
+        #     if self.blocks[test_index] == tile:
+        #         bottom_tresh, top_thresh
+        return True
+
+    def is_tile_valid(self, tile: Vertex) -> bool:  # TODO: maybe rename
+        return self.is_tile_not_blocked(tile) and self.is_tile_on_board(tile)
