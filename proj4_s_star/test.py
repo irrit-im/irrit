@@ -10,12 +10,12 @@ obstacles = [
     O(1, 2),
     O(1, 3),
 ]
-my_graph = Graph(width=5, height=5, blocks=obstacles)
+my_graph = Graph(width=5, height=5, obstacles=obstacles)
 
-if __name__ == "main":
-    path = a_star(starting_point=start, goal=end, graph=my_graph)
-    if path:
-        for v in path:
-            print(v)
-    else:
-        print("No path found")
+
+path = a_star(starting_point=start, goal=end, graph=my_graph)
+if path:
+    for v in path:
+        print(v)
+else:
+    print("No path found")
