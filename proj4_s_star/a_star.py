@@ -19,7 +19,7 @@ def a_star(starting_point: Vertex, goal: Vertex, graph: Graph) -> list[Vertex]:
     closed_vertices: set[Vertex] = set()
 
     while not open_vertices.empty():
-        vertex_data: VertexData = open_vertices.get()  # really needs renaming...
+        vertex_data: VertexData = open_vertices.get()
         vertex: Vertex = vertex_data.vertex
         closed_vertices.add(vertex)
 

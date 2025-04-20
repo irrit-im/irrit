@@ -41,7 +41,7 @@ class Obstacle(Vertex): ...
 
 
 @dataclass()
-class VertexData:  # TODO: rename
+class VertexData:
     vertex: Vertex
     previous_vertex: "VertexData"
     distance_from_start: int

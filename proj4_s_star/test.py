@@ -1,5 +1,5 @@
 from a_star import a_star
-from graphs import Vertex, Graph, VertexData, Obstacle, heuristic_distance
+from graphs import Vertex, Graph, Obstacle
 
 start = Vertex(4, 2)
 end = Vertex(0, 0)
