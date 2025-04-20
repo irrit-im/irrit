@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple
 
-POSSIBLE_DIRECTIONS = (
+EXPAND_DIRECTIONS = (
     (1, 0),
     (0, 1),
     (0, -1),
@@ -10,7 +10,7 @@ POSSIBLE_DIRECTIONS = (
     (1, 1),
     (-1, 1),
     (1, -1),
-)  # TODO: rename
+)
 
 
 @dataclass(frozen=True, order=True)
@@ -18,38 +18,37 @@ class Vertex:
     x: int
     y: int
 
-    def __str__(self) -> str:
-        return f"v({self.x}, {self.y})"
-
     def __add__(self, value: Tuple[int, int] | "Vertex") -> "Vertex":
         if type(value) == tuple:
             return Vertex(x=self.x + value[0], y=self.y + value[1])
         elif type(value) == Vertex:
             return Vertex(self.x + value.x, self.y + value.y)
 
-    # def __gt__(self, value: "Vertex") -> bool:
-    #     return (self.x, self.y) > (value.x, value.y)
-
     def __eq__(self, value: "Vertex") -> bool:
         return self.x == value.x and self.y == value.y
 
+    def __str__(self) -> str:
+        return f"v({self.x}, {self.y})"
+
     def get_adjacent_vertices(self) -> list["Vertex"]:
         adjacent_vertices = []
-        for direction in POSSIBLE_DIRECTIONS:
+        for direction in EXPAND_DIRECTIONS:
             adjacent_vertices.append(self + direction)
         return adjacent_vertices
 
 
+class Obstacle(Vertex): ...
+
+
 @dataclass()
-class VertexData:
-    vertex: Vertex  # TODO: ahhhh this would be a double referenec
-    shortest_path_origin: Vertex
-    path_length_from_start: int
+class VertexData:  # TODO: rename
+    vertex: Vertex
+    previous_vertex: "VertexData"
+    distance_from_start: int
     huerostic_cost_to_goal: int
-    # accesed_through = []
 
     def total_heuristic_cost(self) -> int:
-        return self.path_length_from_start + self.huerostic_cost_to_goal
+        return self.distance_from_start + self.huerostic_cost_to_goal
 
     def __eq__(self, value: "VertexData") -> bool:
         return self.total_heuristic_cost() == value.total_heuristic_cost()
@@ -63,37 +62,21 @@ class VertexData:
             return False
 
 
-# @dataclass(frozen=True, order=True)
-# class Obstacle:
-#     x: int
-#     y: int  # TODO (but only after everything else is done): represent as ranges instead of single tiles, use sweepline alg (or an extension of it) for determining spot's validity
-
-
-def heuristic_distance(start: Vertex, end: Vertex) -> int:
-    return abs(end.x - start.x) + abs(end.y - start.y)
-
-
-@dataclass(frozen=True)
-class Obstacle(Vertex): ...
-
-
 class Graph:
-    def __init__(self, width, height, blocks: list[Obstacle]) -> None:
+    def __init__(self, width, height, obstacles: set[Obstacle]) -> None:
         self.width = width
         self.height = height
-        self.blocks = blocks.sort()
+        self.obstacles = obstacles
 
     def is_tile_on_board(self, tile: Vertex) -> bool:
         return 0 <= tile.x < self.width and 0 <= tile.y < self.height
 
     def is_tile_not_blocked(self, tile: Vertex) -> bool:
-        # top_thresh = len(self.blocks)
-        # bottom_tresh = 0
-        # while top_thresh - bottom_tresh != 0:
-        #     test_index = (bottom_tresh + top_thresh) // 2
-        #     if self.blocks[test_index] == tile:
-        #         bottom_tresh, top_thresh
-        return True
+        return tile not in self.obstacles
 
-    def is_tile_valid(self, tile: Vertex) -> bool:  # TODO: maybe rename
+    def is_tile_valid(self, tile: Vertex) -> bool:
         return self.is_tile_not_blocked(tile) and self.is_tile_on_board(tile)
+
+
+def heuristic_distance(start: Vertex, end: Vertex) -> int:
+    return abs(end.x - start.x) + abs(end.y - start.y)
