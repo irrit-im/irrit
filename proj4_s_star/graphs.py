@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple
+from random import randint
+
 
 EXPAND_DIRECTIONS = (
     (1, 0),
@@ -35,6 +37,10 @@ class Vertex:
         for direction in EXPAND_DIRECTIONS:
             adjacent_vertices.append(self + direction)
         return adjacent_vertices
+
+    @classmethod
+    def random_vertex(cls, graph_width, graph_height) -> "Vertex":
+        return cls(randint(0, graph_width - 1), randint(0, graph_height - 1))
 
 
 class Obstacle(Vertex): ...
