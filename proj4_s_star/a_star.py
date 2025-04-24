@@ -1,5 +1,16 @@
-from graphs import Vertex, Graph, VertexData, heuristic_distance
+from graphs import Vertex, Graph, VertexData, distance, heuristic_distance
 from queue import PriorityQueue
+
+
+def trace_path(
+    from_vertex: VertexData, source: Vertex
+) -> list[Vertex]:  # TODO: this super confusing
+    path = []
+    while from_vertex.vertex != source:
+        path.append(from_vertex.vertex)
+        from_vertex = from_vertex.previous_vertex
+    path.reverse()
+    return path
 
 
 def a_star(starting_point: Vertex, goal: Vertex, graph: Graph) -> list[Vertex]:
@@ -31,21 +42,17 @@ def a_star(starting_point: Vertex, goal: Vertex, graph: Graph) -> list[Vertex]:
             if (adjacent_vertex not in closed_vertices) and graph.is_tile_valid(
                 adjacent_vertex
             ):
+                additional_distance = distance(vertex1=vertex, vertex2=adjacent_vertex)
                 next_path = VertexData(
                     vertex=adjacent_vertex,
                     previous_vertex=vertex_data,
-                    distance_from_start=vertex_data.distance_from_start + 1,
+                    distance_from_start=vertex_data.distance_from_start
+                    + additional_distance,
                     huerostic_cost_to_goal=heuristic_distance(adjacent_vertex, goal),
                 )
                 open_vertices.put(next_path)
 
-    # trace down the path:
     if vertex == goal:
-        path = []
-        while vertex_data.vertex != starting_point:
-            path.append(vertex_data.vertex)
-            vertex_data = vertex_data.previous_vertex
-        path.reverse()
-        return path
+        return trace_path(from_vertex=vertex_data, source=starting_point)
     else:
         return []

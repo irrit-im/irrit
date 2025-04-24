@@ -1,4 +1,4 @@
-from graphs import Vertex, Graph, Obstacle
+from graphs import Vertex, Graph
 from display import GraphSprite
 from a_star import a_star
 from random import randint
@@ -18,20 +18,17 @@ if __name__ == "__main__":
     )
     clock = pygame.time.Clock()
     running = True
-
-    start = Vertex.random_vertex(BOARD_WIDTH_TILES, BOARD_HIGHT_TILES)
-    end = Vertex.random_vertex(BOARD_WIDTH_TILES, BOARD_HIGHT_TILES)
-    obstacles: set[Obstacle] = set()
-
+    my_graph = Graph(width=BOARD_WIDTH_TILES, height=BOARD_HIGHT_TILES)
+    graph_image = GraphSprite(graph=my_graph, total_size_pixels=MAX_SCREEN_SIZE)
+    start = my_graph.random_vertex()
+    end = my_graph.random_vertex()
+    obstacles: set[Vertex] = set()
     for _ in range(randint(0, int(BOARD_HIGHT_TILES * BOARD_WIDTH_TILES * 0.8))):
-        tile = Vertex.random_vertex(BOARD_WIDTH_TILES, BOARD_HIGHT_TILES)
+        tile = my_graph.random_vertex()
         if tile != start and tile != end:
             obstacles.add(tile)
+    my_graph.obstacles = obstacles
 
-    my_graph = Graph(
-        width=BOARD_WIDTH_TILES, height=BOARD_HIGHT_TILES, obstacles=obstacles
-    )
-    graph_image = GraphSprite(graph=my_graph, total_size_pixels=MAX_SCREEN_SIZE)
     path = a_star(starting_point=start, goal=end, graph=my_graph)
 
     graph_image.draw_grid()

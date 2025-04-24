@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Tuple
 from random import randint
+from math import sqrt
 
 
 EXPAND_DIRECTIONS = (
@@ -21,7 +22,7 @@ class Vertex:
     y: int
 
     def __add__(self, value: Tuple[int, int] | "Vertex") -> "Vertex":
-        if type(value) == tuple:
+        if type(value) == tuple:  # TODO: research isinstance
             return Vertex(x=self.x + value[0], y=self.y + value[1])
         elif type(value) == Vertex:
             return Vertex(self.x + value.x, self.y + value.y)
@@ -38,20 +39,13 @@ class Vertex:
             adjacent_vertices.append(self + direction)
         return adjacent_vertices
 
-    @classmethod
-    def random_vertex(cls, graph_width, graph_height) -> "Vertex":
-        return cls(randint(0, graph_width - 1), randint(0, graph_height - 1))
-
-
-class Obstacle(Vertex): ...
-
 
 @dataclass()
 class VertexData:
     vertex: Vertex
-    previous_vertex: "VertexData"
-    distance_from_start: int
-    huerostic_cost_to_goal: int
+    previous_vertex: "VertexData | None"
+    distance_from_start: float
+    huerostic_cost_to_goal: float
 
     def total_heuristic_cost(self) -> int:
         return self.distance_from_start + self.huerostic_cost_to_goal
@@ -59,7 +53,9 @@ class VertexData:
     def __eq__(self, value: "VertexData") -> bool:
         return self.total_heuristic_cost() == value.total_heuristic_cost()
 
-    def __gt__(self, value: "VertexData") -> bool:
+    def __gt__(
+        self, value: "VertexData"
+    ) -> bool:  # TODO: Fun challenge: rewrite this function to be one line
         if self.total_heuristic_cost() > value.total_heuristic_cost():
             return True
         elif self == value:
@@ -67,9 +63,12 @@ class VertexData:
         else:
             return False
 
+    def __ge__(self, value: "VertexData") -> bool:
+        return self > value or self == value
+
 
 class Graph:
-    def __init__(self, width, height, obstacles: set[Obstacle]) -> None:
+    def __init__(self, width: int, height: int, obstacles: set[Vertex] = set()) -> None:
         self.width = width
         self.height = height
         self.obstacles = obstacles
@@ -83,6 +82,13 @@ class Graph:
     def is_tile_valid(self, tile: Vertex) -> bool:
         return self.is_tile_not_blocked(tile) and self.is_tile_on_board(tile)
 
+    def random_vertex(self) -> Vertex:
+        return Vertex(randint(0, self.width - 1), randint(0, self.height - 1))
 
-def heuristic_distance(start: Vertex, end: Vertex) -> int:
-    return abs(end.x - start.x) + abs(end.y - start.y)
+
+def distance(vertex1: Vertex, vertex2: Vertex) -> float:
+    return sqrt((vertex1.x - vertex2.x) ** 2 + (vertex1.y - vertex2.y) ** 2)
+
+
+def heuristic_distance(start: Vertex, end: Vertex) -> float:
+    return abs(end.x - start.x) + abs(end.y - start.y) * sqrt(2)

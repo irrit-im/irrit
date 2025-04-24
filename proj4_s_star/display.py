@@ -1,9 +1,9 @@
-from graphs import Vertex, Graph, Obstacle
+from graphs import Vertex, Graph, Vertex
 from typing import Tuple, List
 import pygame
 
 
-class GraphSprite(pygame.sprite.Sprite, Graph):
+class GraphSprite(pygame.sprite.Sprite):
     def __init__(self, graph: Graph, total_size_pixels: int = 500):
         super().__init__()
         self.graph = graph
@@ -57,7 +57,6 @@ class GraphSprite(pygame.sprite.Sprite, Graph):
             start = self.get_tile_center(path[i])
             end = self.get_tile_center(path[i + 1])
 
-            print(f"draw line from {start} to {end}")
             pygame.draw.line(
                 surface=self.image,
                 color=line_color,
