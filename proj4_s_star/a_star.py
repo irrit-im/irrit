@@ -1,16 +1,5 @@
-from graphs import Vertex, Graph, VertexData, distance, heuristic_distance
+from graphs import Vertex, Graph, VertexOnPath, distance, heuristic_distance
 from queue import PriorityQueue
-
-
-def trace_path(
-    from_vertex: VertexData, source: Vertex
-) -> list[Vertex]:  # TODO: this super confusing
-    path = []
-    while from_vertex.vertex != source:
-        path.append(from_vertex.vertex)
-        from_vertex = from_vertex.previous_vertex
-    path.reverse()
-    return path
 
 
 def a_star(starting_point: Vertex, goal: Vertex, graph: Graph) -> list[Vertex]:
@@ -19,7 +8,7 @@ def a_star(starting_point: Vertex, goal: Vertex, graph: Graph) -> list[Vertex]:
             "Make sure the start and end points are on the graph and not blocked."
         )
 
-    start_vertex_data = VertexData(
+    start_vertex_data = VertexOnPath(
         vertex=starting_point,
         previous_vertex=None,
         distance_from_start=0,
@@ -30,7 +19,7 @@ def a_star(starting_point: Vertex, goal: Vertex, graph: Graph) -> list[Vertex]:
     closed_vertices: set[Vertex] = set()
 
     while not open_vertices.empty():
-        vertex_data: VertexData = open_vertices.get()
+        vertex_data: VertexOnPath = open_vertices.get()
         vertex: Vertex = vertex_data.vertex
         closed_vertices.add(vertex)
 
@@ -43,7 +32,7 @@ def a_star(starting_point: Vertex, goal: Vertex, graph: Graph) -> list[Vertex]:
                 adjacent_vertex
             ):
                 additional_distance = distance(vertex1=vertex, vertex2=adjacent_vertex)
-                next_path = VertexData(
+                next_path = VertexOnPath(
                     vertex=adjacent_vertex,
                     previous_vertex=vertex_data,
                     distance_from_start=vertex_data.distance_from_start
@@ -53,6 +42,6 @@ def a_star(starting_point: Vertex, goal: Vertex, graph: Graph) -> list[Vertex]:
                 open_vertices.put(next_path)
 
     if vertex == goal:
-        return trace_path(from_vertex=vertex_data, source=starting_point)
+        return vertex_data.trace_path()
     else:
         return []

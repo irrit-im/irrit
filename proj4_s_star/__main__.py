@@ -9,7 +9,7 @@ BOARD_WIDTH_TILES = 25
 BOARD_HIGHT_TILES = 25
 MAX_SCREEN_SIZE = 800
 TILE_SIZE_PIXELS = MAX_SCREEN_SIZE // max(BOARD_WIDTH_TILES, BOARD_HIGHT_TILES)
-
+MAX_OBSTACLE_DENSITY = 0.9
 
 if __name__ == "__main__":
     pygame.init()
@@ -18,12 +18,14 @@ if __name__ == "__main__":
     )
     clock = pygame.time.Clock()
     running = True
-    my_graph = Graph(width=BOARD_WIDTH_TILES, height=BOARD_HIGHT_TILES)
+    my_graph = Graph(width=BOARD_WIDTH_TILES, height=BOARD_HIGHT_TILES, obstacles=set())
     graph_image = GraphSprite(graph=my_graph, total_size_pixels=MAX_SCREEN_SIZE)
     start = my_graph.random_vertex()
     end = my_graph.random_vertex()
     obstacles: set[Vertex] = set()
-    for _ in range(randint(0, int(BOARD_HIGHT_TILES * BOARD_WIDTH_TILES * 0.8))):
+    for _ in range(
+        randint(0, int(BOARD_HIGHT_TILES * BOARD_WIDTH_TILES * MAX_OBSTACLE_DENSITY))
+    ):
         tile = my_graph.random_vertex()
         if tile != start and tile != end:
             obstacles.add(tile)

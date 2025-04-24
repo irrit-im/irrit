@@ -22,9 +22,9 @@ class Vertex:
     y: int
 
     def __add__(self, value: Tuple[int, int] | "Vertex") -> "Vertex":
-        if type(value) == tuple:  # TODO: research isinstance
+        if isinstance(value, tuple):
             return Vertex(x=self.x + value[0], y=self.y + value[1])
-        elif type(value) == Vertex:
+        elif isinstance(value, Vertex):
             return Vertex(self.x + value.x, self.y + value.y)
 
     def __eq__(self, value: "Vertex") -> bool:
@@ -41,20 +41,20 @@ class Vertex:
 
 
 @dataclass()
-class VertexData:
+class VertexOnPath:
     vertex: Vertex
-    previous_vertex: "VertexData | None"
+    previous_vertex: "VertexOnPath | None"
     distance_from_start: float
     huerostic_cost_to_goal: float
 
     def total_heuristic_cost(self) -> int:
         return self.distance_from_start + self.huerostic_cost_to_goal
 
-    def __eq__(self, value: "VertexData") -> bool:
+    def __eq__(self, value: "VertexOnPath") -> bool:
         return self.total_heuristic_cost() == value.total_heuristic_cost()
 
     def __gt__(
-        self, value: "VertexData"
+        self, value: "VertexOnPath"
     ) -> bool:  # TODO: Fun challenge: rewrite this function to be one line
         if self.total_heuristic_cost() > value.total_heuristic_cost():
             return True
@@ -63,12 +63,20 @@ class VertexData:
         else:
             return False
 
-    def __ge__(self, value: "VertexData") -> bool:
+    def __ge__(self, value: "VertexOnPath") -> bool:
         return self > value or self == value
+
+    def trace_path(self) -> list[Vertex]:
+        path = []
+        path.append(self.vertex)
+        if self.previous_vertex:
+            path.extend(self.previous_vertex.trace_path())
+
+        return path
 
 
 class Graph:
-    def __init__(self, width: int, height: int, obstacles: set[Vertex] = set()) -> None:
+    def __init__(self, width: int, height: int, obstacles: set[Vertex]) -> None:
         self.width = width
         self.height = height
         self.obstacles = obstacles
@@ -83,7 +91,10 @@ class Graph:
         return self.is_tile_not_blocked(tile) and self.is_tile_on_board(tile)
 
     def random_vertex(self) -> Vertex:
-        return Vertex(randint(0, self.width - 1), randint(0, self.height - 1))
+        vertex = Vertex(randint(0, self.width - 1), randint(0, self.height - 1))
+        while not self.is_tile_valid(vertex):
+            vertex = Vertex(randint(0, self.width - 1), randint(0, self.height - 1))
+        return vertex
 
 
 def distance(vertex1: Vertex, vertex2: Vertex) -> float:
